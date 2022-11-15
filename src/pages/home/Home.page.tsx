@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { GlobalStyles } from "@mui/system";
 import { CssVarsProvider } from "@mui/joy/styles";
 import type { Theme } from "@mui/joy/styles";
@@ -14,10 +15,23 @@ import SideDrawerLayout from "./components/SidedrawerLayout.component";
 import ListDirs from "./components/ListDirs.component";
 import ListFiles from "./components/ListFiles.component";
 import DetailSidebar from "./components/DetailSidebar.component";
+import { useTypedDispatch } from "../../store/hooks";
+import { loadFiles } from "../../store/entities/files";
 
 export default function FilesHomePage() {
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [fileDescription, setFileDescription] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [fileDescription, setFileDescription] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useTypedDispatch();
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      dispatch(loadFiles("/"));
+      setLoading(false);
+    };
+    fetchData().catch(console.error);
+  }, []);
+
   return (
     <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
       <GlobalStyles<Theme>
