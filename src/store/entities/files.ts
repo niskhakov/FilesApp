@@ -111,9 +111,11 @@ export const loadFiles =
         onStart: filesRequested.type,
       })
     );
+    console.log("Fetched 1 page");
     const { totalPages } = getState().entities.files.pagination;
     console.log("after call", totalPages);
     if (totalPages > 1) {
+      dispatch({ type: filesRequested.type });
       for (let page = 2; page <= totalPages; page++) {
         await dispatch(
           apiCallBegan({
@@ -123,40 +125,11 @@ export const loadFiles =
               `&preview_size=M&limit=${limit}&offset=${(page - 1) * limit}`,
             onSuccess: filesPageReceived.type,
             onFailed: filesRequestFailed.type,
-            onStart: filesRequested.type,
           })
         );
+        console.log("Fetched " + page + " page");
       }
-    }
-  };
-
-export const loadPage =
-  (page: number) =>
-  async (dispatch: AppDispatch, getState: () => RootState) => {
-    const path = getState().entities.files.currentPath;
-    const { pagesFetched, totalPages } = getState().entities.files.pagination;
-    if (page > totalPages) return;
-    if (!pagesFetched.includes(page)) {
-      await dispatch(
-        apiCallBegan({
-          url:
-            url +
-            encodeURIComponent(path) +
-            `&preview_size=M&limit=${limit}&offset=${(page - 1) * limit}`,
-          onSuccess: filesPageReceived.type,
-          onFailed: filesRequestFailed.type,
-          onStart: filesRequested.type,
-        })
-      );
-    }
-  };
-
-export const loadAllPages =
-  () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const { totalPages, pagesFetched } = getState().entities.files.pagination;
-    for (let i = 1; i <= totalPages; i++) {
-      if (pagesFetched.includes(i)) continue;
-      await dispatch(loadPage(i));
+      dispatch({ type: filesRequestLoaded.type });
     }
   };
 
