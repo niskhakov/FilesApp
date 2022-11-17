@@ -15,22 +15,41 @@ import SideDrawerLayout from "./components/SidedrawerLayout.component";
 import ListDirs from "./components/ListDirs.component";
 import ListFiles from "./components/ListFiles.component";
 import DetailSidebar from "./components/DetailSidebar.component";
-import { useTypedDispatch } from "../../store/hooks";
-import { loadFiles } from "../../store/entities/files";
+import { useTypedDispatch, useTypedSelector } from "../../store/hooks";
+import {
+  goBack,
+  isLoading,
+  isRoot,
+  loadFiles,
+  loadAllPages,
+  selectFiles,
+} from "../../store/entities/files";
+import { GenericItem } from "../../interfaces/file";
 
 export default function FilesHomePage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [fileDescription, setFileDescription] = useState(false);
-  const [loading, setLoading] = useState(false);
+
   const dispatch = useTypedDispatch();
+  const listFiles = useTypedSelector(selectFiles);
+  const pathIsRoot = useTypedSelector(isRoot);
+  const pathIsLoading = useTypedSelector(isLoading);
+  const dirs = listFiles.filter((file) => file.type == "dir");
+  const files = listFiles.filter((file) => file.type == "file");
+
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
       dispatch(loadFiles("/"));
-      setLoading(false);
     };
     fetchData().catch(console.error);
   }, []);
+
+  const onClickDir = (dir: GenericItem) => {
+    dispatch(loadFiles(dir.path));
+  };
+  const onGoBackDir = () => {
+    dispatch(goBack());
+  };
 
   return (
     <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
@@ -67,8 +86,14 @@ export default function FilesHomePage() {
               gap: 2,
             }}
           >
-            <ListDirs />
-            <ListFiles />
+            <ListDirs
+              items={dirs}
+              onClick={onClickDir}
+              goBack={onGoBackDir}
+              isRoot={pathIsRoot}
+              isLoading={pathIsLoading}
+            />
+            <ListFiles items={files} />
           </Box>
         </Layout.Main>
         <DetailSidebar open={fileDescription} setOpen={setFileDescription} />

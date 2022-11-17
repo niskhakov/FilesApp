@@ -7,11 +7,11 @@ import { StyledEngineProvider } from "@mui/joy/styles";
 import "@fontsource/public-sans";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <StyledEngineProvider injectFirst>
       <Provider store={store}>
         <App />
       </Provider>
     </StyledEngineProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

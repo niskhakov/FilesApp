@@ -1,3 +1,5 @@
+import { GenericItem } from "./file";
+
 export interface Exif {
   date_time?: Date;
 }
@@ -7,7 +9,7 @@ export interface CommentIds {
   public_resource?: string;
 }
 
-export interface Item {
+export interface Item extends GenericItem {
   name: string;
   exif: Exif;
   created: Date;
@@ -15,7 +17,7 @@ export interface Item {
   modified: Date;
   path: string;
   comment_ids: CommentIds;
-  type: string;
+  type: "file" | "dir";
   revision: any;
   antivirus_status: string;
   size?: number;

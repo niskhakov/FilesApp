@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Sheet from "@mui/joy/Sheet";
 import Typography from "@mui/joy/Typography";
 import Box from "@mui/joy/Box";
@@ -6,13 +7,32 @@ import AvatarGroup from "@mui/joy/AvatarGroup";
 import List from "@mui/joy/List";
 import ListDivider from "@mui/joy/ListDivider";
 import ListItem from "@mui/joy/ListItem";
+import LinearProgress from "@mui/joy/LinearProgress";
 import ListItemButton from "@mui/joy/ListItemButton";
 import ListItemContent from "@mui/joy/ListItemContent";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import { GenericItem } from "../../../interfaces/file";
 
-type Props = {};
+type Props = {
+  items: GenericItem[];
+  isLoading?: boolean;
+  isRoot?: boolean;
+  onClick?: (item: GenericItem) => void;
+  goBack?: () => void;
+};
 
-function ListDirs({}: Props) {
+function ListDirs({ items, isRoot, isLoading, goBack, onClick }: Props) {
+  const showLoading = isLoading && (
+    <LinearProgress
+      thickness={1}
+      sx={{
+        gridColumn: "1 / 5",
+        "--LinearProgress-thickness": "1px",
+        "--LinearProgress-progressThickness": "1px",
+      }}
+    />
+  );
+
   return (
     <>
       <Sheet
@@ -44,75 +64,88 @@ function ListDirs({}: Props) {
         <Typography level="body3" fontWeight="md" noWrap>
           Users
         </Typography>
-
-        <Typography
-          level="body2"
-          startDecorator={<FolderOpenIcon color="primary" />}
-          sx={{ alignItems: "flex-start" }}
-        >
-          Travel pictures
-        </Typography>
-        <Typography level="body2">21 October 2011, 3PM</Typography>
-        <Typography level="body2" sx={{ color: "success.600" }}>
-          987.5MB
-        </Typography>
-        <Box>
-          <AvatarGroup
-            size="sm"
-            sx={{ "--AvatarGroup-gap": "-8px", "--Avatar-size": "24px" }}
-          >
-            <Avatar
-              src="https://i.pravatar.cc/24?img=6"
-              srcSet="https://i.pravatar.cc/48?img=6 2x"
-            />
-            <Avatar
-              src="https://i.pravatar.cc/24?img=7"
-              srcSet="https://i.pravatar.cc/48?img=7 2x"
-            />
-            <Avatar
-              src="https://i.pravatar.cc/24?img=8"
-              srcSet="https://i.pravatar.cc/48?img=8 2x"
-            />
-            <Avatar
-              src="https://i.pravatar.cc/24?img=9"
-              srcSet="https://i.pravatar.cc/48?img=9 2x"
-            />
-          </AvatarGroup>
-        </Box>
-        <Typography
-          level="body2"
-          startDecorator={<FolderOpenIcon color="primary" />}
-          sx={{ alignItems: "flex-start" }}
-        >
-          Important documents
-        </Typography>
-        <Typography level="body2">26 May 2010, 7PM</Typography>
-        <Typography level="body2" sx={{ color: "success.600" }}>
-          123.3KB
-        </Typography>
-        <Box>
-          <AvatarGroup
-            size="sm"
-            sx={{ "--AvatarGroup-gap": "-8px", "--Avatar-size": "24px" }}
-          >
-            <Avatar
-              src="https://i.pravatar.cc/24?img=6"
-              srcSet="https://i.pravatar.cc/48?img=6 2x"
-            />
-            <Avatar
-              src="https://i.pravatar.cc/24?img=7"
-              srcSet="https://i.pravatar.cc/48?img=7 2x"
-            />
-            <Avatar
-              src="https://i.pravatar.cc/24?img=8"
-              srcSet="https://i.pravatar.cc/48?img=8 2x"
-            />
-            <Avatar
-              src="https://i.pravatar.cc/24?img=9"
-              srcSet="https://i.pravatar.cc/48?img=9 2x"
-            />
-          </AvatarGroup>
-        </Box>
+        {showLoading}
+        {!isRoot && (
+          <>
+            <Typography
+              level="body2"
+              startDecorator={<FolderOpenIcon color="primary" />}
+              sx={{ alignItems: "flex-start", cursor: "pointer" }}
+              onClick={() => {
+                goBack && goBack();
+              }}
+            >
+              ..
+            </Typography>
+            <Typography level="body2"></Typography>
+            <Typography
+              level="body2"
+              sx={{ color: "success.600" }}
+            ></Typography>
+            <Box>
+              <AvatarGroup
+                size="sm"
+                sx={{ "--AvatarGroup-gap": "-8px", "--Avatar-size": "24px" }}
+              >
+                <Avatar
+                  src="https://i.pravatar.cc/24?img=6"
+                  srcSet="https://i.pravatar.cc/48?img=6 2x"
+                />
+                <Avatar
+                  src="https://i.pravatar.cc/24?img=7"
+                  srcSet="https://i.pravatar.cc/48?img=7 2x"
+                />
+                <Avatar
+                  src="https://i.pravatar.cc/24?img=8"
+                  srcSet="https://i.pravatar.cc/48?img=8 2x"
+                />
+                <Avatar
+                  src="https://i.pravatar.cc/24?img=9"
+                  srcSet="https://i.pravatar.cc/48?img=9 2x"
+                />
+              </AvatarGroup>
+            </Box>
+          </>
+        )}
+        {items.map((dir) => (
+          <Fragment key={dir.name}>
+            <Typography
+              onClick={() => onClick && onClick(dir)}
+              level="body2"
+              startDecorator={<FolderOpenIcon color="primary" />}
+              sx={{ alignItems: "flex-start", cursor: "pointer" }}
+            >
+              {dir.name}
+            </Typography>
+            <Typography level="body2">{dir.created}</Typography>
+            <Typography level="body2" sx={{ color: "success.600" }}>
+              {dir.size}
+            </Typography>
+            <Box>
+              <AvatarGroup
+                size="sm"
+                sx={{ "--AvatarGroup-gap": "-8px", "--Avatar-size": "24px" }}
+              >
+                <Avatar
+                  src="https://i.pravatar.cc/24?img=6"
+                  srcSet="https://i.pravatar.cc/48?img=6 2x"
+                />
+                <Avatar
+                  src="https://i.pravatar.cc/24?img=7"
+                  srcSet="https://i.pravatar.cc/48?img=7 2x"
+                />
+                <Avatar
+                  src="https://i.pravatar.cc/24?img=8"
+                  srcSet="https://i.pravatar.cc/48?img=8 2x"
+                />
+                <Avatar
+                  src="https://i.pravatar.cc/24?img=9"
+                  srcSet="https://i.pravatar.cc/48?img=9 2x"
+                />
+              </AvatarGroup>
+            </Box>
+          </Fragment>
+        ))}
       </Sheet>
       <Sheet
         variant="outlined"
@@ -135,125 +168,112 @@ function ListDirs({}: Props) {
             "& .JoyListItemButton-root": { p: "0px" },
           }}
         >
-          <ListItem>
-            <ListItemButton variant="soft" sx={{ bgcolor: "transparent" }}>
-              <ListItemContent sx={{ p: 2 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    mb: 1,
-                  }}
-                >
-                  <Typography
-                    level="body2"
-                    startDecorator={<FolderOpenIcon color="primary" />}
-                    sx={{ alignItems: "flex-start" }}
-                  >
-                    Travel pictures
-                  </Typography>
-                  <Typography level="body2" sx={{ color: "success.600" }}>
-                    987.5MB
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    mt: 2,
-                  }}
-                >
-                  <Box>
-                    <AvatarGroup
-                      size="sm"
+          {!isRoot && (
+            <>
+              <ListItem>
+                <ListItemButton variant="soft" sx={{ bgcolor: "transparent" }}>
+                  <ListItemContent sx={{ p: 2 }}>
+                    <Box
+                      onClick={() => goBack && goBack()}
                       sx={{
-                        "--AvatarGroup-gap": "-8px",
-                        "--Avatar-size": "24px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        mb: 1,
                       }}
                     >
-                      <Avatar
-                        src="https://i.pravatar.cc/24?img=6"
-                        srcSet="https://i.pravatar.cc/48?img=6 2x"
-                      />
-                      <Avatar
-                        src="https://i.pravatar.cc/24?img=7"
-                        srcSet="https://i.pravatar.cc/48?img=7 2x"
-                      />
-                      <Avatar
-                        src="https://i.pravatar.cc/24?img=8"
-                        srcSet="https://i.pravatar.cc/48?img=8 2x"
-                      />
-                      <Avatar
-                        src="https://i.pravatar.cc/24?img=9"
-                        srcSet="https://i.pravatar.cc/48?img=9 2x"
-                      />
-                    </AvatarGroup>
-                  </Box>
-                  <Typography level="body2">21 October 2011, 3PM</Typography>
-                </Box>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListDivider sx={{ m: 0 }} />
-          <ListItem>
-            <ListItemButton variant="soft" sx={{ bgcolor: "transparent" }}>
-              <ListItemContent sx={{ p: 2 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    mb: 1,
-                  }}
-                >
-                  <Typography
-                    level="body2"
-                    startDecorator={<FolderOpenIcon color="primary" />}
-                    sx={{ alignItems: "flex-start" }}
-                  >
-                    Important documents
-                  </Typography>
-                  <Typography level="body2" sx={{ color: "success.600" }}>
-                    123.3KB
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    mt: 2,
-                  }}
-                >
-                  <Box>
-                    <AvatarGroup
-                      size="sm"
+                      <Typography
+                        level="body2"
+                        startDecorator={<FolderOpenIcon color="primary" />}
+                        sx={{ alignItems: "flex-start" }}
+                      >
+                        ...
+                      </Typography>
+                      <Typography
+                        level="body2"
+                        sx={{ color: "success.600" }}
+                      ></Typography>
+                    </Box>
+                    <Box
                       sx={{
-                        "--AvatarGroup-gap": "-8px",
-                        "--Avatar-size": "24px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        mt: 2,
                       }}
                     >
-                      <Avatar
-                        src="https://i.pravatar.cc/24?img=6"
-                        srcSet="https://i.pravatar.cc/48?img=6 2x"
-                      />
-                      <Avatar
-                        src="https://i.pravatar.cc/24?img=7"
-                        srcSet="https://i.pravatar.cc/48?img=7 2x"
-                      />
-                      <Avatar
-                        src="https://i.pravatar.cc/24?img=8"
-                        srcSet="https://i.pravatar.cc/48?img=8 2x"
-                      />
-                      <Avatar
-                        src="https://i.pravatar.cc/24?img=9"
-                        srcSet="https://i.pravatar.cc/48?img=9 2x"
-                      />
-                    </AvatarGroup>
-                  </Box>
-                  <Typography level="body2">26 May 2010, 7PM</Typography>
-                </Box>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
+                      <Box></Box>
+                      <Typography level="body2"></Typography>
+                    </Box>
+                  </ListItemContent>
+                </ListItemButton>
+              </ListItem>
+              <ListDivider sx={{ m: 0 }} />
+            </>
+          )}
+          {items.map((dir) => (
+            <Fragment key={dir.name}>
+              <ListItem>
+                <ListItemButton variant="soft" sx={{ bgcolor: "transparent" }}>
+                  <ListItemContent sx={{ p: 2 }}>
+                    <Box
+                      onClick={() => onClick && onClick(dir)}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        mb: 1,
+                      }}
+                    >
+                      <Typography
+                        level="body2"
+                        startDecorator={<FolderOpenIcon color="primary" />}
+                        sx={{ alignItems: "flex-start" }}
+                      >
+                        {dir.name}
+                      </Typography>
+                      <Typography level="body2" sx={{ color: "success.600" }}>
+                        {dir.size}
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        mt: 2,
+                      }}
+                    >
+                      <Box>
+                        <AvatarGroup
+                          size="sm"
+                          sx={{
+                            "--AvatarGroup-gap": "-8px",
+                            "--Avatar-size": "24px",
+                          }}
+                        >
+                          <Avatar
+                            src="https://i.pravatar.cc/24?img=6"
+                            srcSet="https://i.pravatar.cc/48?img=6 2x"
+                          />
+                          <Avatar
+                            src="https://i.pravatar.cc/24?img=7"
+                            srcSet="https://i.pravatar.cc/48?img=7 2x"
+                          />
+                          <Avatar
+                            src="https://i.pravatar.cc/24?img=8"
+                            srcSet="https://i.pravatar.cc/48?img=8 2x"
+                          />
+                          <Avatar
+                            src="https://i.pravatar.cc/24?img=9"
+                            srcSet="https://i.pravatar.cc/48?img=9 2x"
+                          />
+                        </AvatarGroup>
+                      </Box>
+                      <Typography level="body2">{dir.created}</Typography>
+                    </Box>
+                  </ListItemContent>
+                </ListItemButton>
+              </ListItem>
+              <ListDivider sx={{ m: 0 }} />
+            </Fragment>
+          ))}
         </List>
       </Sheet>
     </>

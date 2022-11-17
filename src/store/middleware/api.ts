@@ -2,6 +2,7 @@ import { Middleware } from "redux";
 import axios from "axios";
 import { RootState } from "../configureStore";
 import * as actions from "../api";
+import config from "../../config";
 
 const api: Middleware<
   {}, // Most middlewares do not modify the dispatch return value
@@ -18,13 +19,11 @@ const api: Middleware<
 
     try {
       const response = await axios.request({
-        baseURL: "https://preview.public2.ru/api/yd/",
+        baseURL: config.BASE_URL,
         url,
         method,
         data,
-        headers: {
-          Authorization: "OAuth AQAAAABjgH0MAAhJJFZNrfxNXEY7iRW9we8XDkQ",
-        },
+        headers: {},
       });
 
       // General
