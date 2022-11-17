@@ -41,15 +41,9 @@ const slice = createSlice({
       files.loading = false;
     },
     filesReceived: (files, action: PayloadAction<FileItem>) => {
-      const items = action.payload._embedded.items.map((item) => ({
-        ...item,
-        preview:
-          item.preview &&
-          item.preview.replace(
-            "https://downloader.disk.yandex.ru/preview/",
-            config.BASE_URL + "preview/"
-          ),
-      }));
+      const items = action.payload._embedded.items.map((item) =>
+        processItem(item)
+      );
       const { total, limit } = action.payload._embedded;
       const totalPages = Math.ceil(total / limit);
       files.pagination = {
@@ -66,15 +60,9 @@ const slice = createSlice({
         return;
       }
 
-      const items = action.payload._embedded.items.map((item) => ({
-        ...item,
-        preview:
-          item.preview &&
-          item.preview.replace(
-            "https://downloader.disk.yandex.ru/preview/",
-            config.BASE_URL + "preview/"
-          ),
-      }));
+      const items = action.payload._embedded.items.map((item) =>
+        processItem(item)
+      );
 
       const { limit, offset } = action.payload._embedded;
 
@@ -133,6 +121,8 @@ export const loadFiles =
     }
   };
 
+export const downloadFile = () => {};
+
 export const goBack =
   () => (dispatch: AppDispatch, getState: () => RootState) => {
     console.log(getState().entities.files.currentPath);
@@ -166,3 +156,23 @@ export const isRoot = (state: RootState): boolean => {
 export const isLoading = (state: RootState): boolean => {
   return state.entities.files.loading;
 };
+
+// Helpers
+function processItem(item: Item) {
+  return {
+    ...item,
+    preview:
+      item.preview &&
+      item.preview.replace(
+        "https://downloader.disk.yandex.ru/preview/",
+        config.BASE_URL + "preview/"
+      ),
+    file:
+      item.file &&
+      item.file.replace(
+        "https://downloader.disk.yandex.ru/disk/",
+        config.BASE_URL + "disk/"
+      ),
+    dlurl: `${config.BASE_URL}dl/${item.path.replace("disk:/", "")}`,
+  };
+}

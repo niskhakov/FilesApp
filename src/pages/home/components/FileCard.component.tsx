@@ -4,15 +4,14 @@ import Box from "@mui/joy/Box";
 import IconButton from "@mui/joy/IconButton";
 import Card from "@mui/joy/Card";
 import CardOverflow from "@mui/joy/CardOverflow";
-
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DownloadIcon from "@mui/icons-material/Download";
+import { GenericItem } from "../../../interfaces/file";
 
 export interface FileCardProps {
-  name: string;
-  created: Date;
+  file: GenericItem;
 }
 
-const FileCard = (file: FileCardProps) => {
+const FileCard = ({ file }: FileCardProps) => {
   return (
     <Card
       variant="outlined"
@@ -37,7 +36,7 @@ const FileCard = (file: FileCardProps) => {
               color: "primary.plainColor",
             }}
           >
-            .zip
+            .{file.name.substr(file.name.lastIndexOf(".") + 1)}
           </Typography>
         </AspectRatio>
       </CardOverflow>
@@ -61,9 +60,11 @@ const FileCard = (file: FileCardProps) => {
             Added {file.created}
           </Typography>
         </Box>
-        <IconButton variant="plain" color="neutral">
-          <EditOutlinedIcon />
-        </IconButton>
+        <a href={file.path} target="_blank">
+          <IconButton variant="plain" color="neutral">
+            <DownloadIcon />
+          </IconButton>
+        </a>
       </Box>
     </Card>
   );

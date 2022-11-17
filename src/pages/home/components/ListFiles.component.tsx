@@ -18,9 +18,9 @@ type Props = {
 };
 
 const ListFiles = ({ items }: Props) => {
-  const respectPreview = (file) => {
+  const respectPreview = (file: GenericItem) => {
     const Component = file.preview ? FileCardPreview : FileCard;
-    return <Component {...file} key={file.name} src={file.preview} />;
+    return <Component file={file} key={file.name} src={file.preview ?? ""} />;
   };
 
   return <>{items.map((file) => respectPreview(file))}</>;
