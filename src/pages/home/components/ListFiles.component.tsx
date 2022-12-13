@@ -12,15 +12,26 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { GenericItem } from "../../../interfaces/file";
 import FileCard from "./FileCard.component";
 import FileCardPreview from "./FileCardPreview.component";
+import { DOWNLOAD_URL } from "../../../config";
 
 type Props = {
   items: GenericItem[];
 };
 
 const ListFiles = ({ items }: Props) => {
+  const getDownloadUrl = (file: GenericItem) => {
+    return DOWNLOAD_URL + file.path;
+  };
   const respectPreview = (file: GenericItem) => {
     const Component = file.preview ? FileCardPreview : FileCard;
-    return <Component file={file} key={file.name} src={file.preview ?? ""} />;
+    return (
+      <Component
+        file={file}
+        key={file.name}
+        src={file.preview ?? ""}
+        getDownloadUrl={getDownloadUrl}
+      />
+    );
   };
 
   return <>{items.map((file) => respectPreview(file))}</>;

@@ -6,12 +6,14 @@ import Card from "@mui/joy/Card";
 import CardOverflow from "@mui/joy/CardOverflow";
 import DownloadIcon from "@mui/icons-material/Download";
 import { GenericItem } from "../../../interfaces/file";
+import { DOWNLOAD_URL } from "../../../config";
 
 export interface FileCardProps {
   file: GenericItem;
+  getDownloadUrl?: (file: GenericItem) => string;
 }
 
-const FileCard = ({ file }: FileCardProps) => {
+const FileCard = ({ file, getDownloadUrl }: FileCardProps) => {
   return (
     <Card
       variant="outlined"
@@ -60,7 +62,7 @@ const FileCard = ({ file }: FileCardProps) => {
             Added {file.created}
           </Typography>
         </Box>
-        <a href={file.path} target="_blank">
+        <a href={getDownloadUrl && getDownloadUrl(file)} target="_blank">
           <IconButton variant="plain" color="neutral">
             <DownloadIcon />
           </IconButton>

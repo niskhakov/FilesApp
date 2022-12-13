@@ -3,7 +3,7 @@ import { FileItem, Item } from "../../interfaces/yandex";
 import { apiCallBegan } from "../api";
 import { RootState, AppDispatch } from "../configureStore";
 import { GenericItem } from "../../interfaces/file";
-import config from "../../config";
+import * as config from "../../config";
 
 interface InitialState {
   list: Item[];
@@ -143,6 +143,12 @@ export const selectFiles = (state: RootState): GenericItem[] => {
 
 export const getCurrentPath = (state: RootState): string => {
   return state.entities.files.currentPath;
+};
+
+export const getParentPath = (state: RootState): string => {
+  let path = state.entities.files.currentPath.split("/").slice(0, -1).join("/");
+  if (!path) path = "/";
+  return path;
 };
 
 export const getTotalPages = (state: RootState): number => {

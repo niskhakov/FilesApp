@@ -13,7 +13,11 @@ interface PreviewFileCardProps extends FileCardProps {
   src: string;
 }
 
-const FileCardPreview = ({ file, src }: PreviewFileCardProps) => {
+const FileCardPreview = ({
+  file,
+  getDownloadUrl,
+  src,
+}: PreviewFileCardProps) => {
   return (
     <Card
       sx={{
@@ -52,7 +56,7 @@ const FileCardPreview = ({ file, src }: PreviewFileCardProps) => {
             Added {file.created}
           </Typography>
         </Box>
-        <a href={file.file} target="_blank">
+        <a href={getDownloadUrl && getDownloadUrl(file)} target="_blank">
           <IconButton variant="plain" color="neutral" sx={{ color: "#fff" }}>
             <DownloadIcon />
           </IconButton>

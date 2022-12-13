@@ -2,7 +2,7 @@ import { Middleware } from "redux";
 import axios from "axios";
 import { RootState } from "../configureStore";
 import * as actions from "../api";
-import config from "../../config";
+import * as config from "../../config";
 
 const api: Middleware<
   {}, // Most middlewares do not modify the dispatch return value

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 import { GlobalStyles } from "@mui/system";
 import { CssVarsProvider } from "@mui/joy/styles";
 import type { Theme } from "@mui/joy/styles";
@@ -17,16 +17,19 @@ import ListFiles from "./components/ListFiles.component";
 import DetailSidebar from "./components/DetailSidebar.component";
 import { useTypedDispatch, useTypedSelector } from "../../store/hooks";
 import {
+  getCurrentPath,
+  getParentPath,
   goBack,
   isLoading,
   isRoot,
   loadFiles,
-  loadAllPages,
   selectFiles,
 } from "../../store/entities/files";
 import { GenericItem } from "../../interfaces/file";
 
 export default function FilesHomePage() {
+  let params = useParams();
+  let navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [fileDescription, setFileDescription] = useState(false);
 
@@ -34,21 +37,27 @@ export default function FilesHomePage() {
   const listFiles = useTypedSelector(selectFiles);
   const pathIsRoot = useTypedSelector(isRoot);
   const pathIsLoading = useTypedSelector(isLoading);
+  const parentPath = useTypedSelector(getParentPath);
+  const currentPath = useTypedSelector(getCurrentPath);
   const dirs = listFiles.filter((file) => file.type == "dir");
   const files = listFiles.filter((file) => file.type == "file");
 
+  const path = "/" + params["*"];
+  console.log("useParams:", path, "redux:", currentPath);
   useEffect(() => {
     const fetchData = async () => {
-      dispatch(loadFiles("/"));
+      dispatch(loadFiles(path));
     };
     fetchData().catch(console.error);
-  }, []);
+  }, [path]);
 
   const onClickDir = (dir: GenericItem) => {
-    dispatch(loadFiles(dir.path));
+    navigate("/files" + dir.path.replace("disk:", ""));
+    // dispatch(loadFiles(dir.path));
   };
   const onGoBackDir = () => {
-    dispatch(goBack());
+    navigate("/files" + parentPath);
+    // dispatch(goBack());
   };
 
   return (
